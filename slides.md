@@ -380,3 +380,330 @@ titlewidth: is-4
 **Projections**
 
 <img src="./assets/images/projections.png" />
+
+<v-click>
+<img src="./assets/images/transformation.png" />
+</v-click>
+
+<!--
+In Event Sourcing, Projections (also known as View Models or Query Models) provide a view
+of the underlying event-based data model. Often they represent the logic of translating the
+source write model into the read model. They are used in both read models and write
+models.
+
+Projections In The Read Model
+A common scenario in this context is taking events created in the write model (e.g.
+InvoiceIssued, OrderPlaced, PaymentSubmitted, OrderItemAdded, InvoicePaid,
+OrderConfirmed) and calculating a read model view (e.g. an order summary containing the
+paid invoice number, outstanding invoices items, due date status, etc.). This type of object
+can be stored in a different database and used for queries.
+
+A set of events can also be a starting point for generating another set of events. For example,
+you can take order events, calculate the pricing summary and generate a new order
+payment event and place it in another stream. This type of projection is also called
+transformation.
+-->
+
+---
+layout: side-title
+align: cm-lt
+color: amber-light
+titlewidth: is-4
+---
+
+:: title ::
+
+# Core Principles of Event Sourcing
+
+:: content ::
+
+**Event aggregation**
+
+<img src="./assets/images/event-aggregation.png" />
+
+<!--
+Another form of projection is called stream aggregation. It’s a process of building the current
+state of the write model from the stream events. During aggregation, events are applied one
+by one in order of appearance. The main purpose of a stream aggregation is to rebuild the
+current state to validate an executed command against it.
+
+Projections should be treated as temporary and disposable. This is one of their key benefits
+as they can be destroyed, reimagined and recreated at will; they should not be considered
+the source of truth.
+
+There is a lot of conceptual crossover between a projection and a read model, and this can
+lead to some confusion. The simplest way to understand the relationship between
+projections and read models is that a read model is made of multiple projections. 
+
+Theprojections are the method of populating your read model, and represent discrete parts of
+the whole read model. For example, a projection can be used to create invoices, and another
+can be used as a financial report, both of which are part of the read model.
+
+A common misconception in explaining Event Sourcing is conflating projections with the
+state. In Event Sourcing, the source of truth is the events, and the state of the application is
+derived from these events. Facts are stored in events; projections are an interpretation of that
+raw data.
+-->
+
+---
+layout: side-title
+align: cm-lt
+color: amber-light
+titlewidth: is-4
+---
+
+:: title ::
+
+# Related Terms
+
+:: content ::
+
+**Eventual consistency**
+
+<!--
+Eventual consistency is the idea that, in a distributed system, all the different parts of the
+system will eventually return all the same values. It is a form of weak consistency; not all the
+parts of the system may return the same values, and certain conditions will need to be met or
+actions taken in order to make sure all the different parts of the system are consistent.
+
+There’s a misconception that an eventually consistent system will be inaccurate due to the
+time delays involved. The time taken to return the same values may not be defined within the
+system, but the time frames are within the millisecond to seconds range, rather than large
+spans of time.
+
+No matter what kind of database or structure you use, eventual consistency is something you
+will have to deal with: it’s not a problem specific to Event Sourcing. There will always be a
+delay between an input being received, being recorded to storage, then called out again.
+
+One of the first misconceptions about Event Sourcing is that eventual consistency will be a
+major problem. This is no more of a problem for Event Sourcing as it is for any other pattern
+of storing data, and handling it will depend on your use case. Depending on the event store,
+implementation changes (do not have to be) eventually consistent. Most of the stores allow
+strong consistency when appending events.
+-->
+
+---
+layout: side-title
+align: cm-lt
+color: amber-light
+titlewidth: is-4
+---
+
+:: title ::
+
+# Related Terms
+
+:: content ::
+
+**Write Model**
+
+<img src="./assets/images/write-model.png" />
+
+<!--
+The write model is responsible for handling the business logic. If you’re using CQRS, then this
+is the place where commands are handled. The write model has two aspects: physical and
+logical. The physical aspect relates to how and where data is stored, and the logical aspect
+reflects the business domain recreated in code structures, and can also be referred to as the
+Domain Model. Contrary to the traditional anaemic model, it not only contains the data but
+also the methods to change the data and validate it. The logic within the write model should
+be as close as possible to the business processes; you should be able to read the code and
+fully understand the business requirements from the code.
+Let’s take an example: a write model for issuing invoices. It has data, e.g. amounts, vendor
+names, invoice numbers, and methods like “Issue Invoice”
+. 
+
+It has rules such as “each invoice number must be unique”,“each invoice must contain a vendor name” etc. By having the
+design of the system derived from the domain, we can keep all the business logic and data in
+one place. A write model is essential, but a read model is not always needed.
+A useful pattern to consider while implementing the write model is the aggregate. It is
+responsible for maintaining data consistency, and by using it we’re making sure that all
+related data will be stored in a single, atomic transaction. Aggregates are not necessary, but
+they are very common.
+
+In Domain Driven Design, Eric Evans discusses the granular nature of objects, and provides a
+definition of an aggregate. From the Domain Driven Design “blue” book:
+“An aggregate is a cluster of associated objects that we treat as a unit for the purpose of data
+changes. Each aggregate has a root and a boundary. The boundary defines what is inside the
+aggregate. The root is a single, specific entity contained in the aggregate.
+
+Aggregates are the consistency guards. They take the current state, verify the business rules
+for the particular operation (e.g. if there is no invoice with the same number) and apply the
+business logic that returns the new state. The important part of this process is storing all or
+nothing. All aggregated data needs to be saved successfully. If one rule or operation fails
+then the whole state change is rejected.
+
+In Event Sourcing, each operation made on the aggregate should result with the new event.
+For example, issuing the invoice should result in the InvoiceIssued event. Once the event has
+happened, it is recorded in the event store.
+
+It’s easy to assume that because there are aggregates, you can have one mega aggregate.
+However, this will cause more problems in the long run. Smaller, more concise aggregates
+that focus on one aspect will make a more efficient system overall and preserve the business
+context where needed. As an example, consider the invoice aggregate. A VAT validation
+process would not need all the information contained in the invoice, so this process could be
+a smaller, more concise aggregate. This preserves the business context where it’s needed.
+-->
+
+---
+layout: side-title
+align: cm-lt
+color: amber-light
+titlewidth: is-4
+---
+
+:: title ::
+
+# Related Terms
+
+:: content ::
+
+**Read model**
+
+<img src="./assets/images/read-model.png" />
+
+<!--
+Queries in CQRS represent the intention to get data. A read model contains specific
+information. For example, the read model contains all the invoice information (the amount,
+the due date, etc) and the query represents the intention to know something about the
+invoice, such as whether or not it has been paid.
+
+The read model can be, but doesn’t have to be, derived from the write model. It’s a
+transformation of the results of the business operation into a readable form.
+As stated in the Projections section, read models are created by projections. Events
+appended in the event store triggers the projection logic that creates or updates the read
+model.
+
+The read model is specialised for queries. It’s modelled to be a straightforward output that
+can be digested by various readers. It can be presented in many different ways, including a
+display on a monitor, an API, another dependent service or even to create the PDF of the
+invoice. In short, a read model is a general concept not tied to any type of storage.
+
+However, the read model does not have to be permanent: new read models can be
+introduced into the system without impacting the existing ones. Read models can be deleted
+and recreated without losing the business logic or information, as this is stored in the write
+model.
+-->
+
+---
+layout: side-title
+align: cm-lt
+color: amber-light
+titlewidth: is-4
+---
+
+:: title ::
+
+# Related Terms
+
+:: content ::
+
+**Domain Driven Design**
+
+<!--
+Domain Driven Design (DDD) is a method for optimizing a team’s understanding of a problem
+space, and how to work in that space. At its core, it’s about having a ubiquitous language
+between the terms used by the business users and the development team. This unification of
+language can be extremely useful when translating the problem concept into functioning
+software.
+
+Domain Driven Design was first coined by Eric Evans in his seminal work Domain-Driven
+Design: Tackling Complexity in the Heart of Software. Evans took his experience and fused the
+business process and the implementation as a first step in the design process, then created a
+ubiquitous language based on that first step. He realised the importance of using a common
+language to collaborate efficiently on the project.
+
+Domain Driven Design is important because it requires meaningful and continued
+collaboration between the architect and the product owner. It takes the developer away from
+the purely technical and theoretical world, and imposes a reality on their development skills. It
+also forces the product owner (or customer) to think through what they require from the
+system and recognise the capabilities of it. By making all the stakeholders cooperate, a shared
+understanding is created, and progress is more efficient.
+
+The creation of a ubiquitous language involves Knowledge Crunching, the process of taking
+unRelated Terms from business and development and creating something from the scattered
+terms. It’s collaborative, it can be messy, but can also be the beginning of a beautiful
+friendship.
+
+Using Domain Driven Design with Event Sourcing is not mandatory. However, the main
+concepts such as speaking the same language as the business and proper business process
+modelling are also good foundations for building an Event Sourcing system. The better
+understanding we have of the business processed, the more precise the business information
+will be in our events.
+-->
+
+---
+layout: side-title
+align: cm-lt
+color: amber-light
+titlewidth: is-4
+---
+
+:: title ::
+
+# Related Terms
+
+:: content ::
+
+**CQRS**
+
+<img src="./assets/images/cqrs.png" />
+
+<!--
+CQRS is a development of CQS, which is an architectural pattern, and the acronym stands for
+Command Query Separation. CQS is the core concept that defines two types of operations
+handled in a system: a command that executes a task, a query that returns information, and
+there should never be one function to do both of these jobs. The term was created by
+Bertrand Meyer in his book ‘Object-oriented Software Construction’ (1988, Prentice Hall).
+CQRS is another architectural pattern acronym, standing for Command Query Responsibility
+Segregation. It divides a system’s actions into commands and queries. The two are similar,
+but not the same. Oskar Dudycz describes the difference as “CQRS can be interpreted at a
+higher level, more general than CQS; at an architectural level. CQS defines the general
+principle of behaviour. CQRS speaks more specifically about implementation”
+.
+
+
+One of the common misconceptions about CQRS is that the commands and queries should
+be run on separate databases. This isn’t necessarily true; only that the behaviours and
+responsibilities for both should be separated. This can be within the code, within the structure
+of the database, or (if the situation calls for it), different databases.
+Expanding on that concept, CQRS doesn’t even have to use a database: It could be run off an
+Excel spreadsheet, or anything else containing data.
+Event sourcing and CQRS seems like a new and interesting design patterns, but they have
+been around for some time. CQRS can feel like a strange new technique, especially after
+spending years learning with a foundation based in CRUD. CQRS was described by Greg
+Young as a ‘stepping stone towards Event Sourcing’
+. It’s important to understand event
+sourcing and CQRS do not rely on each other; you can have an event sourced system without
+CQRS and you can use CQRS without event sourcing. It’s just that the two work best together.
+-->
+
+---
+layout: two-cols-title
+color: amber-light
+---
+
+:: title ::
+
+# More resources
+
+:: left ::
+
+<a href="https://www.adlibris.com/nb/bok/learning-domain-driven-design-9781098100131?utm_source=google&utm_medium=cpc&utm_campaign=AR%3A+BOK+-+pMAX+Shopping+-+Generic+-+B%C3%B6cker+ENG&gad_source=1&gclid=EAIaIQobChMIgPSCpO3jiwMVGkiRBR3p8QrxEAQYASABEgL9dfD_BwE" target="_blank">
+  <img src="./assets/images/learning-domain-driven-design.png" width="300" />
+</a>
+
+:: right ::
+
+<a href="./assets/resources/event-store-ebook-beginners-guide-to-event-sourcing.pdf" download>
+  <div class="flex flex-col items-center justify-center " >
+    <span>Beginners guide to event sourcing</span>
+    <img src="./assets/images/beginners-guide-to-event-sourcing.png" width="170" />
+  </div>
+</a>
+
+<a href="https://ambar.cloud/event-sourcing-one-day-course" target="_blank">
+  <div class="flex flex-col items-center justify-center pt-[50px]" >
+    <span>Free course on event sourcing</span>
+    <img src="./assets/images/ambar-course.png" width="200" />
+  </div>
+</a>
