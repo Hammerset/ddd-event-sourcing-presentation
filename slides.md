@@ -18,6 +18,8 @@ transition: none
 mdc: true
 ---
 
+An introduction to
+
 ### Domain Driven Event Sourcing
 
 ---
@@ -37,15 +39,13 @@ Event sourcing is a pattern where changes that occur in a business domain are im
 
 :: content::
 
-<v-click>
+<img src="./assets/images/event-sourcing-timeline.png" class="w-full" />
 
 - Provides the business with richer data
 - Allows for replay of events to derive current state
 - Allows for audit and compliance
 - Allows for testing by replaying events
 - Each event contains the context of the change: the what, when, who, where, why
-
-</v-click>
 
 <!--
 This provides a business with richer data as each change that occurs within the domain is
@@ -59,25 +59,24 @@ to the business.
 
 ---
 layout: side-title
-align: lb-lm
+align: lm-lm
 color: amber-light
 titlewidth: is-5
 ---
 
 :: title ::
 
-<div class="pb-200px">
-  <h1>Event sourcing</h1>
-</div>
-
-# ==Example==
+# Event sourcing
 
 :: content ::
 
-<img src="./assets/images/event-sourcing-example-1.png" class="w-full" />
+**Without event sourcing [CRUD]**
+<img src="./assets/images/event-sourcing-example-1.png" width="380" />
 
 <v-click>
-  <img src="./assets/images/event-sourcing-example-2.png" class="w-full" />
+
+**Event sourcing**
+<img src="./assets/images/event-sourcing-example-2.png" width="380" />
 </v-click>
 
 <!--
@@ -96,18 +95,14 @@ In an event sourced system, the status change would be captured as an event
 
 ---
 layout: side-title
-align: lb-lm
+align: lm-lm
 color: amber-light
 titlewidth: is-5
 ---
 
 :: title ::
 
-<div class="pb-200px">
-  <h1>Event sourcing</h1>
-</div>
-
-# ==Example==
+# Event sourcing
 
 :: content ::
 
@@ -201,6 +196,25 @@ remain in place while writes are directed to the services.
 </v-click>
 
 ---
+layout: full
+color: amber-light
+---
+
+# 🤔 Event sourcing drawbacks
+
+**Heavily reliant on good practices**
+
+- The team needs to know the patterns
+- New members need to be educated
+- Doing it wrong = tech debt
+
+**Small ecosystem**
+
+- Not many production grade libraries
+- Can be difficult to find answers
+- But I have found this to be improving and growing lately
+
+---
 layout: side-title
 align: cm-lt
 color: amber-light
@@ -277,7 +291,8 @@ model Activity {
   createdAt DateTime @default(now()) // When
   createdBy String // Who
   requestId String @default(dbgenerated("gen_random_uuid()"))
-  key   String // What / why
+  type String // why eg. "InitiativeCreated" || "InitiativeStarted"
+  key   String // what
   value Json // What
 
   @@id([initiativeId, seqNumber])
