@@ -127,6 +127,80 @@ benefits.
 -->
 
 ---
+layout: two-cols-title
+color: amber-light
+---
+
+:: title ::
+
+# Benefits of event sourcing 🚀
+
+:: left ::
+
+🔍 **Auditable** <br/>
+An event-sourced system stores data as a series of immutable events over time, providing one of the strongest audit log options available.
+
+🕒 **Time travel** <br/>
+All state changes are stored, allowing to time travel back and forward in time. Which can be valuable for debugging and analysis.
+
+ℹ️ **Root cause analysis** <br/>
+Business events can be tied back to their originating events providing tracability and visibility for entire workflows from start to finish.
+
+:: right ::
+
+<v-click>
+
+🛡️ **Fault tolerant** <br/>
+Event sourcing is fundamentally just logs with strong backup and recovery capabilities. Writing the core "source of record" data to the event store enables the rebuilding of downstream projections.
+
+➡️ **Event driven architecture** <br/>
+Event sourcing naturally supports event-driven architectures, making it easier to scale and integrate with other systems and build complex business workflows.
+
+🔄 **Asynchronous first** <br/>
+Event sourced systems strive for the minimum amount of synchronous
+interaction; consistency boundaries are consciously chosen so that business
+requirements are met, and everything else is eventually consistent. This
+results in responsive, high performance, scalable systems.
+
+</v-click>
+
+---
+layout: two-cols-title
+color: amber-light
+---
+
+:: title ::
+
+# Benefits of event sourcing 🚀
+
+:: left ::
+
+🤖 **Service autonomy** <br/>
+If any service is down, the depending services can "catch up" when the service is back online by replaying the events.
+
+🔄 **Replay and reshape** <br/>
+The event can be replayed and transformed to provide new insights and analytics. For instance it can be replayed into any point in time and be the basis of a what-if analysis to project potential future outcomes.
+
+👁️ **Observability** <br/>
+Event sourcing provides excellent observability into system behavior and state changes over time, making it easier to monitor, debug, and understand system dynamics. What is uniquely powerful is that the events
+can contain the business context which allows real-time analytics.
+
+:: right ::
+
+<v-click>
+
+⬇️ **One way data flow** <br/>
+Data in a CQRS flows one way, through independent models to update and read information. This brings an improved ability to reason about the data and debug as each component in the data flow has a single responsibility.
+
+📦 **Migration** <br/>
+Migration of legacy systems to modern distributed architectures can be
+carried out incrementally, gradually replacing specific pieces of functionality
+with event-sourced services. Existing read paths of the legacy system can
+remain in place while writes are directed to the services.
+
+</v-click>
+
+---
 layout: full
 color: amber-light
 ---
