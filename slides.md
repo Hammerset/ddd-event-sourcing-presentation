@@ -201,6 +201,52 @@ remain in place while writes are directed to the services.
 </v-click>
 
 ---
+layout: side-title
+align: cm-lt
+color: amber-light
+titlewidth: is-4
+---
+
+:: title ::
+
+# Core Principles of Event Sourcing
+
+:: content ::
+
+# Events
+
+Events are referred to in past tense, and represents the specific business facts.
+<img src="./assets/images/events.png" class="w-full" />
+
+**Event model content**
+
+<div class="ns-c-tight">
+
+- When: The timestamp of the event
+- What: The unique identifier of the subject
+  - e.g ID reference to the contract
+- Who: The user or system that caused the event
+- Why: The specific business event that occurred
+  - e.g. "RenewedContract"
+
+</div>
+
+<!--
+- For example:
+"Product added" shows the state of the shopping cart has definetly changed, rather than just come into beeing in the state model.
+
+The exact definition of an event is going to depend on
+the business use case, and should reflect your business data.
+
+We want to keep the events as small and focused as possible, and not include any business logic. That would be up to the read models and queries to provide the business insights.
+
+It’s this implicit information in the event name ‘InvoiceIssued’
+, along with the metadata and
+the immutable nature of the event store that makes it an excellent solution for extracting
+more useful, in-depth insights and context for the business.
+-->
+
+---
 layout: full
 color: amber-light
 ---
