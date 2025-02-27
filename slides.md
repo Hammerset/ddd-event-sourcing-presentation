@@ -473,43 +473,6 @@ titlewidth: is-4
 
 :: content ::
 
-**Eventual consistency**
-
-<!--
-Eventual consistency is the idea that, in a distributed system, all the different parts of the
-system will eventually return all the same values. It is a form of weak consistency; not all the
-parts of the system may return the same values, and certain conditions will need to be met or
-actions taken in order to make sure all the different parts of the system are consistent.
-
-There’s a misconception that an eventually consistent system will be inaccurate due to the
-time delays involved. The time taken to return the same values may not be defined within the
-system, but the time frames are within the millisecond to seconds range, rather than large
-spans of time.
-
-No matter what kind of database or structure you use, eventual consistency is something you
-will have to deal with: it’s not a problem specific to Event Sourcing. There will always be a
-delay between an input being received, being recorded to storage, then called out again.
-
-One of the first misconceptions about Event Sourcing is that eventual consistency will be a
-major problem. This is no more of a problem for Event Sourcing as it is for any other pattern
-of storing data, and handling it will depend on your use case. Depending on the event store,
-implementation changes (do not have to be) eventually consistent. Most of the stores allow
-strong consistency when appending events.
--->
-
----
-layout: side-title
-align: cm-lt
-color: amber-light
-titlewidth: is-4
----
-
-:: title ::
-
-# Related Terms
-
-:: content ::
-
 **Write Model**
 
 <img src="./assets/images/write-model.png" />
@@ -614,9 +577,17 @@ titlewidth: is-4
 
 **Domain Driven Design**
 
+- Method for optimizing a team’s understanding of a problem space, and how to work in that space.
+- Ubiquitous language is core
+- Takes the developer away from the purely technical and theoretical world, and imposes a reality on their development skills.
+- Enforces collaboration between the business and the development team.
+- Combined with Event Sourcing, it forces the devlopers to think about the actual domain events and how they map to the business processes.
+
 <!--
-Domain Driven Design (DDD) is a method for optimizing a team’s understanding of a problem
-space, and how to work in that space. At its core, it’s about having a ubiquitous language
+- Domain Driven Design (DDD) is a method for optimizing a team’s understanding of a problem
+space, and how to work in that space. 
+
+- At its core, it’s about having a ubiquitous language
 between the terms used by the business users and the development team. This unification of
 language can be extremely useful when translating the problem concept into functioning
 software.
