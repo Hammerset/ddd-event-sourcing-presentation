@@ -216,20 +216,15 @@ titlewidth: is-4
 # Events
 
 Events are referred to in past tense, and represents the specific business facts.
-<img src="./assets/images/events.png" class="w-full" />
+
+<img src="./assets/images/events.png" />
 
 **Event model content**
 
-<div class="ns-c-tight">
-
-- When: The timestamp of the event
-- What: The unique identifier of the subject
-  - e.g ID reference to the contract
-- Who: The user or system that caused the event
-- Why: The specific business event that occurred
-  - e.g. "RenewedContract"
-
-</div>
+- **When** The timestamp of the event <br/>
+- **What** The unique identifier of the subject <br/>
+- **Who** The user or system that caused the event <br/>
+- **Why** The specific business event that occurred <br/>
 
 <!--
 - For example:
@@ -237,6 +232,12 @@ Events are referred to in past tense, and represents the specific business facts
 
 The exact definition of an event is going to depend on
 the business use case, and should reflect your business data.
+
+exapmles:
+e.g. "RenewedContract"
+e.g. "InvoiceIssued"
+
+uniques identifier: e.g ID reference to the contract 
 
 We want to keep the events as small and focused as possible, and not include any business logic. That would be up to the read models and queries to provide the business insights.
 
@@ -247,185 +248,19 @@ more useful, in-depth insights and context for the business.
 -->
 
 ---
-layout: full
-color: amber-light
----
-
-# Event sourcing
-
-<img src="./assets/images/event-sourcing-timeline.png" class="w-full" />
-
----
-layout: section
-side: l
-titlewidth: is-5
-align: cm-lm
-color: amber-light
----
-
-<div >
-
-# Event sourcing fundamentals
-
-</div>
-
----
-layout: two-cols-title
-side: l
-color: amber-light
----
-
-:: title ::
-
-# What is event sourcing?
-
-:: left ::
-
-### Active record pattern
-
-**State is the source of truth**
-
-- An interpretation of what happened
-- Can be changed by anyone
-- Hard to know what and why something changed
-
-:: right ::
-
-<v-click>
-
-### Event sourcing
-
-**Events is the source of truth**
-
-- Factual statements about what happened
-- Immutable
-- Sequential
-- Derived state projections from the events
-
-</v-click>
-
----
-layout: side-title
-side: l
-color: amber-light
-align: cm-lm
----
-
-:: title ::
-
-# What are Events?
-
-:: content ::
-
-- Factual statements about what happened
-- Immutable
-- Content
-  - Who, what, when, where, why
-
-**Best practices**
-
-- Small and focused
-- Not CRUD on entities
-- Part on a short lived process
-
----
-layout: two-cols
-align: cm-cm
-color: amber-light
----
-
-:: title ::
-
-# Events are immutable
-
-:: left ::
-
-  <ObjectBox>
-    <div>
-      <b>Update</b>
-    </div>
-    <div text-left>
-        <div>Name: Contract</div>
-        <div>kek: Sup2</div>
-        <div>Supplier: Sup1</div>
-    </div>
-  </ObjectBox>
-
-<Arrow v-click="1" x1="350" y1="250" x2="610" y2="200" />
-<Arrow v-click="2" x1="350" y1="280" x2="610" y2="340" />
-
-:: right ::
-
-<div style="display: flex; flex-direction: column; gap: 5rem;">
-  <ObjectBox v-click="1">
-    <div>
-      <b>Some operation</b>
-    </div>
-  </ObjectBox>
-
-  <ObjectBox v-click="2">
-    <div>
-      <b>Some operation</b>
-    </div>
-  </ObjectBox>
-</div>
-
----
-layout: default
-color: amber-light
----
-
-# Aggregates
-
-**A collection of related events modeling a process**
-
-**Best practices**
-
-- Keep business logic inside an aggregate
-- Avoid big agregates
-
-<!--
-- Keep business logic inside an aggregate (easier transactional guarantees)
--->
-
----
-layout: default
-color: amber-light
----
-
-# Command handlers
-
-**Commands**
-
-- Expression of intent
-- Coming from end users, internal or external systems
-
-**Command handlers**
-
-- Application logic that receives users or system input, and potentially writes new events
-- Build existing aggregate by loading events
-- Validates the command
-- Writes new events to the event store
-
----
-layout: default
-color: amber-light
----
-
-# Event example with flow chart
-
----
 layout: top-title
 color: amber-light
+titlewidth: is-4
 ---
 
 :: title ::
 
-# Storing events
+# Core Principles of Event Sourcing
 
 :: content ::
 
-```ts {1-7|7-12|7-18|all}
+```ts {1-7|7-12|7-19|all}
+// Event model for initiatives in Reduce
 model Initiative {
   id         String     @id @default(uuid(7))
   tenant     String     @default(dbgenerated("current_setting('app.tenant'::text)"))
@@ -471,148 +306,77 @@ model Activity {
   @@id([initiativeId, seqNumber])
   @@index([tenant, initiativeId])
 }
+
+Each change that took place in the domain is recorded in the database. Event-native
+databases are natively focused on storing events. Usually, they do that by having the
+append-only log as the central point.
+
+Event-native databases are a different kind of database from traditional databases (graph,
+document, relational etc). They are specifically designed to store the history of changes, the
+state is represented by the append-only log of events. The events are stored in chronological
+order, and new events are appended to the previous event.
+
+The events are immutable: they cannot be changed. This well-known rule of event stores is
+often the first defining feature of event stores and Event Sourcing that most people hear, and
+is absolutely true, from a certain point of view.
+
+The events in the log can’t be changed, but their effects can be altered by later events. For
+example, there may be an ‘InvoiceIssued’ event appended to the log one day, only for it to be
+announced that the address the invoice was issued to is incorrect. A new event can be
+added, with the ‘InvoiceVoided’ event, then another event with the corrected address and an
+‘InvoiceIssued’ event. All three events are stored, all are still immutable, but the desired
+outcome is achieved: an invoice has been issued to the correct address. The events are
+immutable, but that does not mean that log cannot be changed.
 -->
 
 ---
-layout: two-cols-title
+layout: side-title
+align: cm-lt
 color: amber-light
+titlewidth: is-4
 ---
 
 :: title ::
 
-# Event sourcing benefits 🚀
+# Core Principles of Event Sourcing
 
-:: left ::
-**Development speed**
+:: content ::
 
-- Consistent and dependable patterns
-- New features often require minimum or no toucing of old code
+**Event store**
 
-**Simplifies complexity**
-
-- Overengineered?
-- This approach worsk for complex, process driven domains (aka Ignite)
-
-:: right ::
-**Auditable by design**
-
-- Immutable log of events
-- The past cannot be altered
-- For domains that need **compliance**
-
-**Debuggable by design**
-
-- Does equal no bugs 🐛
-- But we can audit the log and replay the events and find exactly what went wrong
-- We can write a test and replay the events to verify the logic
-- Very useful in domains with changing requirements (aka Ignite)
-
----
-layout: default
-color: amber-light
----
-
-# Event sourcing benefits 🚀
-
-**When to use event sourcing**
-
-<ul>
-<v-clicks every="2">
-<li>Is the domain complex?</li>
-<li>Is the domain process driven?</li>
-<li>Is the domain audit and compliance required?</li>
-<li>Will the domain's requirements change frequently?</li>
-</v-clicks>
-</ul>
-
-<SpeechBubble position="bl" shape="round"  color='amber-light' v-drag="[625,250,274,57]" v-click="3">
-Is any of the above true?
-</SpeechBubble>
-
-<SpeechBubble position="r" shape="round" animation="float"  color='amber-light' v-drag="[273,391,274,84]" v-click="4">
-
-Consider event sourcing!
-</SpeechBubble>
-
-<Planet :size="150" mood="lovestruck" color="#F59E0B" v-drag="[579,341,85,150]" v-click="3" />
-
----
-layout: full
-color: amber-light
----
-
-# 🤔 Event sourcing drawbacks
-
-**Heavily reliant on good practices**
-
-- The team needs to know the patterns
-- New members need to be educated
-- Doing it wrong = tech debt
-
-**Schema maintenance**
-
-- It is not trivial to change the schema
-
-**Small ecosystem**
-
-- Not many production grade libraries
-- Can be difficult to find answers
-
----
-layout: full
-color: amber-light
----
-
-# Domain Driven Design
-
-**Code matches the business domain language**
-
-- Originating from domain experts
-- Ubiquitous language
-
-**Best practices**
-
----
-layout: full
-color: amber-light
----
-
-# Domain driven design
-
-**Knowledge discovery**
-
-```mermaid {theme: 'amber-light', scale: 0.8}
-graph LR
-    A[🧠 Domain knowledge] ---|Discovery 🔍| B(🤔 Mental model)
-    B ---|Design 📐| C{🧩 Solution model}
-    C ---|Implementation | D[</CODE> Code 💻]
-    linkStyle 0,1,2 stroke:#333,stroke-width:2px,stroke-dasharray: 5 5;
-    style A fill:#f9f,stroke:#333,stroke-width:2px
-    style B fill:#ccf,stroke:#333,stroke-width:2px
-    style C fill:#9f9,stroke:#333,stroke-width:2px
-    style D fill:#ffc,stroke:#333,stroke-width:2px
-```
-
-**Ubiquitous language**
-
-> "Common sense is not so common"
->
-> -- Voltaire
+<img src="./assets/images/event-store-database.png" />
 
 <!--
-This is practiced to some degree, but I am repeating as I think it is very important for out success.
+Streams
+Within the event store, the events referring to a particular domain or domain object are
+stored in a stream. Event streams are the source of truth for the domain object and contain
+the full history of the changes. You can retrieve state by reading all the stream events and
+applying them one by one in the order of appearance.
 
-To design an effective software solution, we at least needs to grasp the the basic knowledge of the business domain.
+A stream should have a unique identifier representing the specific object. Each event has its
+own unique position within a stream. This position is usually represented by a numeric,
+incremental value. This number can be used to define the order of the events while retrieving
+the state. It can be also used to detect concurrency issues.
 
-By no means should we, nor can we, become domain experts.
-
-But it is crucial for us to understand the domain experts and to use the same business terminology they use.
-
-To be effective, the software needs to mimic the domain experts' way of thinking about the problem -- their mental model.
-
-Graph:
-- Domain knowledge into an analysis model
-- Analysis model into a requirements
-- Requirements into system design
-- System design into code
+Event stores are built to be able to store a huge number of events efficiently. You don’t need
+to be afraid of creating lots of streams, however, you should watch the number of events in
+those streams. Streams can be short-lived with lots of events, or long-lived with fewer
+events. Shorter-lived streams are helpful for maintenance and makes versioning easier.
 -->
+
+---
+layout: side-title
+align: cm-lt
+color: amber-light
+titlewidth: is-4
+---
+
+:: title ::
+
+# Core Principles of Event Sourcing
+
+:: content ::
+
+**Projections**
+
+<img src="./assets/images/projections.png" />
